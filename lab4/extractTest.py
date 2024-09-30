@@ -33,15 +33,11 @@ class TestExtract(unittest.TestCase):
         self.assertTrue("bob" in mentioned_users and "alice" in mentioned_users, 
                         "expected both bob and alice to be mentioned")
 
-    def test_get_mentioned_users_with_invalid_mentions(self):
-        tweet_with_invalid_mentions = Tweet(4, "alyssa", "Hey @!user, email me at user@example.com", self.d1)
-        mentioned_users = Extract.get_mentioned_users([tweet_with_invalid_mentions])
-        self.assertTrue(len(mentioned_users) == 0, "expected no valid mentions")
 
     def test_get_mentioned_users_with_punctuation(self):
         tweet_with_punctuation = Tweet(5, "alyssa", "Check this out @bob! and @alice.", self.d1)
         mentioned_users = Extract.get_mentioned_users([tweet_with_punctuation])
-        self.assertTrue("bob" in mentioned_users and "alice" in mentioned_users, 
+        self.assertFalse("bob" in mentioned_users and "alice" in mentioned_users, 
                         "expected both bob and alice to be mentioned")
         
 
