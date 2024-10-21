@@ -33,12 +33,17 @@ class Timespan:
 
 class Filter:
     @staticmethod
-    def writtenBy(tweets: List[Tweet], username: str) -> List[Tweet]:
-        return [tweet for tweet in tweets if tweet.get_author().lower() == username.lower()]
+    def writtenBy(tweets: List[Tweet], author: str) -> List[Tweet]:
+        # Legal variation: Return tweets by the specified author in reverse chronological order
+        result = [tweet for tweet in tweets if tweet.author.lower() == author.lower()]
+        return sorted(result, key=lambda t: t.get_timestamp(), reverse=True)
 
     @staticmethod
     def inTimespan(tweets: List[Tweet], timespan: Timespan) -> List[Tweet]:
-        return [tweet for tweet in tweets if timespan.get_start() <= tweet.get_timestamp() <= timespan.get_end()]
+        # Legal variation: This checks inclusively, ensuring tweets with timestamps exactly equal
+        # to the start or end of the timespan are also included.
+        return [tweet for tweet in tweets if timespan.start <= tweet.get_timestamp() <= timespan.end]
+
 
     @staticmethod
     def containing(tweets: List[Tweet], words: List[str]) -> List[Tweet]:
