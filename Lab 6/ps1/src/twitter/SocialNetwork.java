@@ -39,19 +39,21 @@ public class SocialNetwork {
      *         either authors or @-mentions in the list of tweets.
      */
 	public static Map<String, Set<String>> guessFollowsGraph(List<Tweet> tweets) {
-	    Map<String, Set<String>> followsGraph = new HashMap<>();
+	    Map<String, Set<String>> followsGraph = new HashMap<>(); // Initialize the follows graph as an empty map
 	    
+	    // Loop through each tweet in the provided list
 	    for (Tweet tweet : tweets) {
-	        String author = tweet.getAuthor().toLowerCase();
-	        Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet));
+	        String author = tweet.getAuthor().toLowerCase(); // Get the author's username (case insensitive)
+	        Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet)); // Extract mentioned users from the tweet
 	        
+	        // Only update the follows graph if there are mentioned users
 	        if (!mentionedUsers.isEmpty()) {
-	            followsGraph.putIfAbsent(author, new HashSet<>());
-	            followsGraph.get(author).addAll(mentionedUsers);
+	            followsGraph.putIfAbsent(author, new HashSet<>()); // Add the author to the graph if not already present
+	            followsGraph.get(author).addAll(mentionedUsers); // Add mentioned users to the author's follow list
 	        }
 	    }
 	    
-	    return followsGraph;
+	    return followsGraph; // Return the completed follows graph
 	}
 
 
@@ -65,18 +67,22 @@ public class SocialNetwork {
      *         descending order of follower count.
      */
 	public static List<String> influencers(Map<String, Set<String>> followsGraph) {
-        Map<String, Integer> followerCount = new HashMap<>();
+        Map<String, Integer> followerCount = new HashMap<>(); // Map to track follower counts for each user
 
+        // Loop through each user's follow list to count followers
         for (Set<String> followers : followsGraph.values()) {
             for (String user : followers) {
+                // Increment the follower count for each user
                 followerCount.put(user, followerCount.getOrDefault(user, 0) + 1);
             }
         }
 
+        // Create a list of influencers from the follower counts
         List<String> influencers = new ArrayList<>(followerCount.keySet());
+        // Sort the influencers based on follower counts in descending order
         influencers.sort((user1, user2) -> followerCount.get(user2) - followerCount.get(user1));
 
-        return influencers;
+        return influencers; // Return the sorted list of influencers
     }
 
 }
